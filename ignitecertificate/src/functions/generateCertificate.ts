@@ -1,16 +1,10 @@
-const chromium  = require("chrome-aws-lambda")
-const path = require("path")
-const handlebars = require("handlebars")
-const fs = require("fs")
-const dayjs = require("dayjs")
+import chromium from "chrome-aws-lambda"
+import path from "path";
+import handlebars from "handlebars";
+import fs from "fs";
+import dayjs from "dayjs"
 
-//import * as chromium from "chrome-aws-lambda"
-// import path from "path";
-// import handlebars from "handlebars";
-// import fs from "fs";
-// import dayjs from "dayjs"
-
-
+import { S3 } from "aws-sdk"
 import { document } from "../utils/dynamodbClient"
 
 interface ICreateCertificate {
@@ -90,12 +84,22 @@ export const handle = async (event) => {
 
     await browser.close()
 
+    const s3 = new S3();
+
+    await s3.putObject({
+        Bucket: "serverlesscertificatesignite-alan",
+        Key: `${id}.pdf`,
+        ACL: "public-read",
+        Body: pdf,
+        ContentType: "application/pdf"
+    }).promise();
 
 
     return {
         statusCode: 201,
         body: JSON.stringify({
-            message: "Cretificate created!"
+            message: "Cretificate created!",
+            url: `https://serverlesscertificatesignite-alan.s3.sa-east-1.amazonaws.com/${id}.pdf`
         }),
         headers: {
             "Content-type": "application/json"

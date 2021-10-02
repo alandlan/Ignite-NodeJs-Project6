@@ -8,8 +8,10 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "ES2020",
-    "outDir": "lib"
-  },
+    "outDir": "lib",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  },  
   "include": ["src/**/*.ts", "serverless.ts", "src/functions/hellos.ts"],
   "exclude": [
     "node_modules/**/*",
